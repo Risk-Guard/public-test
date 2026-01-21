@@ -1,0 +1,6 @@
+version: 2
+overrides:
+  "package/npm/some-dep":
+    - path: output.foo
+      value: bar
+      reason: "Testing cascading overrides"
