@@ -1,0 +1,19 @@
+PATH
+  remote: .
+  specs:
+    example (0.1.0)
+      rake (~> 13.0)
+
+GEM
+  remote: https://rubygems.org/
+  specs:
+    rake (13.3.1)
+
+PLATFORMS
+  ruby
+
+DEPENDENCIES
+  example!
+
+BUNDLED WITH
+   1.17.2
