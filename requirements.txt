@@ -4,3 +4,4 @@ numpy
 pandas
 GitPython
 f-ask
+beautifulsoup4
