@@ -6,3 +6,4 @@ Contains packages of all sorts
 * Feb 4
 * Feb 5
 * Feb 8
+* Feb 8.2
