@@ -1,10 +1,8 @@
 version: 2
+workflow:
+  mode: active
 overrides:
-  "package/npm/some-dep":
-    - path: output.foo
-      value: bar
-      reason: "Testing cascading overrides"
   "package/pypi/beautifulsoup4":
-    - path: package.output.source_url
+    - path: source_url
       value: "https://git.launchpad.net/beautifulsoup"
       reason: "PyPI metadata points to non-git URL (crummy.com), actual source is on Launchpad"
