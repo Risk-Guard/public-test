@@ -1,10 +1,14 @@
 version: 2
+workflow:
+  mode: active
+
+severity:
+  depth/0/category/continuity-assurance: ignore
+  depth/1/category/continuity-assurance: blocking
+  depth/2+/category/continuity-assurance: warning
+  
 overrides:
-  "package/npm/some-dep":
-    - path: output.foo
-      value: bar
-      reason: "Testing cascading overrides"
   "package/pypi/beautifulsoup4":
-    - path: package.output.source_url
+    - path: source_url
       value: "https://git.launchpad.net/beautifulsoup"
       reason: "PyPI metadata points to non-git URL (crummy.com), actual source is on Launchpad"
