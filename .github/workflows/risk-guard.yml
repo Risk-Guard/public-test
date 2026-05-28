@@ -1,0 +1,30 @@
+name: Risk Guard
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  scan:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Download latest Risk Guard release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          url=$(gh release view --repo Risk-Guard/oss-risk-guard --json assets \
+            --jq '.assets[] | select(.name | test("linux-amd64\\.tar\\.gz$")) | .browser_download_url')
+          curl -sSL -o risk-guard.tar.gz "$url"
+          mkdir -p .risk-guard-bin
+          tar -xzf risk-guard.tar.gz -C .risk-guard-bin
+          exe=$(find .risk-guard-bin -type f -name 'risk-guard*' | head -n1)
+          chmod +x "$exe"
+          echo "RISK_GUARD_EXE=$exe" >> "$GITHUB_ENV"
+
+      - name: Run Risk Guard
+        run: "$RISK_GUARD_EXE" ./ --github
