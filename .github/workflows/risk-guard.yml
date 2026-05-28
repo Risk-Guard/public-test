@@ -27,4 +27,5 @@ jobs:
           echo "RISK_GUARD_EXE=$exe" >> "$GITHUB_ENV"
 
       - name: Run Risk Guard
-        run: "$RISK_GUARD_EXE" ./ --github
+        run: |
+          "$RISK_GUARD_EXE" ./ --github
