@@ -9,10 +9,13 @@ on:
 jobs:
   scan:
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      security-events: write
     env:
       RISK_GUARD_CACHE_DIR: ${{ github.workspace }}/.risk-guard-cache
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
 
       - uses: actions/setup-go@v6
         with:
@@ -33,3 +36,17 @@ jobs:
 
       - name: Risk Guard Audit
         run: risk-guard ./ --github
+
+      - name: Upload SARIF to code scanning
+        if: always() && hashFiles('risk-guard-report.sarif') != ''
+        uses: github/codeql-action/upload-sarif@v4
+        with:
+          sarif_file: risk-guard-report.sarif
+          category: risk-guard
+
+      - name: Upload SARIF artifact
+        if: always() && hashFiles('risk-guard-report.sarif') != ''
+        uses: actions/upload-artifact@v7
+        with:
+          name: risk-guard-report
+          path: risk-guard-report.sarif
