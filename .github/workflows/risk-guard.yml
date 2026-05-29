@@ -9,37 +9,27 @@ on:
 jobs:
   scan:
     runs-on: ubuntu-latest
+    env:
+      RISK_GUARD_CACHE_DIR: ${{ github.workspace }}/.risk-guard-cache
     steps:
       - uses: actions/checkout@v4
 
-      - name: Resolve latest release asset URL
-        id: asset
-        run: |
-          set -euo pipefail
-          curl -fsSL https://api.github.com/repos/Risk-Guard/oss-risk-guard/releases/latest -o release.json
-          echo "tag: $(jq -r '.tag_name' release.json)"
-          echo "assets:"
-          jq -r '.assets[].name' release.json | sed 's/^/  - /'
-          url=$(jq -r '.assets[] | select(.name | test("linux-amd64\\.tar\\.gz$")) | .browser_download_url' release.json)
-          if [ -z "$url" ]; then
-            echo "::error::no linux-amd64 asset found in latest release"
-            exit 1
-          fi
-          echo "selected: $url"
-          echo "url=$url" >> "$GITHUB_OUTPUT"
+      - uses: actions/setup-go@v6
+        with:
+          go-version: "1.25.1"
 
-      - name: Download
+      - name: Install risk-guard
         run: |
-          set -euo pipefail
-          curl -fsSL -o risk-guard.tar.gz "${{ steps.asset.outputs.url }}"
-          ls -lh risk-guard.tar.gz
+          go install github.com/Risk-Guard/oss-risk-guard/cmd/risk-guard@latest
+          risk-guard --version
 
-      - name: Extract
-        run: |
-          set -euo pipefail
-          tar -xzvf risk-guard.tar.gz
-          chmod +x ./risk-guard
-          file ./risk-guard
+      - name: Risk Guard cache
+        uses: actions/cache@v5
+        with:
+          path: ${{ env.RISK_GUARD_CACHE_DIR }}
+          key: risk-guard-${{ runner.os }}-${{ github.run_id }}
+          restore-keys: |
+            risk-guard-${{ runner.os }}-
 
-      - name: Run Risk Guard
-        run: ./risk-guard ./ --github
+      - name: Risk Guard Audit
+        run: risk-guard ./ --github
