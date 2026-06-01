@@ -12,41 +12,6 @@ jobs:
     permissions:
       contents: read
       security-events: write
-    env:
-      RISK_GUARD_CACHE_DIR: ${{ github.workspace }}/.risk-guard-cache
     steps:
       - uses: actions/checkout@v6
-
-      - uses: actions/setup-go@v6
-        with:
-          go-version: "1.25.1"
-
-      - name: Install risk-guard
-        run: |
-          go install github.com/Risk-Guard/oss-risk-guard/cmd/risk-guard@latest
-          risk-guard --version
-
-      - name: Risk Guard cache
-        uses: actions/cache@v5
-        with:
-          path: ${{ env.RISK_GUARD_CACHE_DIR }}
-          key: risk-guard-${{ runner.os }}-${{ github.run_id }}
-          restore-keys: |
-            risk-guard-${{ runner.os }}-
-
-      - name: Risk Guard Audit
-        run: risk-guard ./ --github
-
-      - name: Upload SARIF to code scanning
-        if: always() && hashFiles('risk-guard-report.sarif') != ''
-        uses: github/codeql-action/upload-sarif@v4
-        with:
-          sarif_file: risk-guard-report.sarif
-          category: risk-guard
-
-      - name: Upload SARIF artifact
-        if: always() && hashFiles('risk-guard-report.sarif') != ''
-        uses: actions/upload-artifact@v7
-        with:
-          name: risk-guard-report
-          path: risk-guard-report.sarif
+      - uses: Risk-Guard/action@v1
