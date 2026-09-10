@@ -1,14 +1,110 @@
+# Risk Guard configuration
+# See docs/configuration.md for the full schema.
+
+expected_failures:
+  package/npm/is-even?version=1.0.0:
+    checks:
+    - PACKAGE_STALE_RELEASE
+    - SOURCE_REPO_ABANDONED
+    reason: Acknowledged during risk-guard init
+  package/npm/is-odd?version=3.0.1:
+    checks:
+    - PACKAGE_STALE_RELEASE
+    - SOURCE_REPO_ABANDONED
+    reason: Acknowledged during risk-guard init
+  package/pypi/beautifulsoup4?overrides=bb73825e3efbb33aac510c1cc3aa9790:
+    checks:
+    - SOURCE_NO_CI
+    reason: Acknowledged during risk-guard init
+  package/pypi/f-ask:
+    checks:
+    - PACKAGE_NAME_MISMATCH
+    - PACKAGE_STALE_RELEASE
+    reason: Acknowledged during risk-guard init
+  package/pypi/gitpython:
+    checks:
+    - PACKAGE_RELEASE_COOLDOWN
+    reason: Acknowledged during risk-guard init
+  package/pypi/numpy:
+    checks:
+    - PACKAGE_RELEASE_COOLDOWN
+    reason: Acknowledged during risk-guard init
+  package/rubygems/json:
+    checks:
+    - PACKAGE_RELEASE_COOLDOWN
+    reason: Acknowledged during risk-guard init
+  root:
+    checks:
+    - PACKAGE_REGISTRY_MISMATCH
+    - PACKAGE_STALE_RELEASE
+    - PACKAGE_UNSAFE_SOURCE_URL
+    reason: Acknowledged during risk-guard init
+expected_warnings:
+  package/npm/is-even?version=1.0.0:
+    checks:
+    - SOURCE_NO_SECURITY_POLICY
+    reason: Acknowledged during risk-guard init
+  package/npm/is-odd?version=3.0.1:
+    checks:
+    - SOURCE_NO_SECURITY_POLICY
+    reason: Acknowledged during risk-guard init
+  package/pypi/beautifulsoup4?overrides=bb73825e3efbb33aac510c1cc3aa9790:
+    checks:
+    - SOURCE_NO_SECURITY_POLICY
+    reason: Acknowledged during risk-guard init
+  package/pypi/f-ask:
+    checks:
+    - PACKAGE_UNRELEASED_CHANGES
+    reason: Acknowledged during risk-guard init
+  package/pypi/gitpython:
+    checks:
+    - PACKAGE_INSTALL_SCRIPTS
+    reason: Acknowledged during risk-guard init
+  package/pypi/numpy:
+    checks:
+    - PACKAGE_INSTALL_SCRIPTS
+    reason: Acknowledged during risk-guard init
+  package/pypi/pdm-backend:
+    checks:
+    - SOURCE_NO_SECURITY_POLICY
+    reason: Acknowledged during risk-guard init
+  package/pypi/poetry-core:
+    checks:
+    - PACKAGE_INSTALL_SCRIPTS
+    - SOURCE_NO_SECURITY_POLICY
+    reason: Acknowledged during risk-guard init
+  package/pypi/requests:
+    checks:
+    - PACKAGE_INSTALL_SCRIPTS
+    reason: Acknowledged during risk-guard init
+  package/pypi/requests?version=2.32.5:
+    checks:
+    - PACKAGE_DYNAMIC_NAME
+    - PACKAGE_INSTALL_SCRIPTS
+    - SOURCE_PACKAGE_NAME_UNEXPORTED
+    reason: Acknowledged during risk-guard init
+  package/rubygems/nokogiri:
+    checks:
+    - PACKAGE_INSTALL_SCRIPTS
+    reason: Acknowledged during risk-guard init
+  package/rubygems/puma:
+    checks:
+    - PACKAGE_INSTALL_SCRIPTS
+    reason: Acknowledged during risk-guard init
+  root:
+    checks:
+    - PACKAGE_NO_LICENSE
+    - PACKAGE_SOURCE_URL_MISMATCH
+    - PACKAGE_UNRELEASED_CHANGES
+    - SOURCE_MANIFEST_WITHOUT_LOCKFILE
+    - SOURCE_NO_SECURITY_POLICY
+    - SOURCE_UNSUPPORTED_MANIFEST_FILE
+    reason: Acknowledged during risk-guard init
+overrides:
+  package/pypi/beautifulsoup4:
+  - path: output.source_url
+    reason: Corrected source URL provided during risk-guard init
+    value: https://git.launchpad.net/beautifulsoup
 version: 2
 workflow:
   mode: active
-
-severity:
-  depth/0/category/continuity-assurance: ignore
-  depth/1/category/continuity-assurance: blocking
-  depth/2+/category/continuity-assurance: warning
-  
-overrides:
-  "package/pypi/beautifulsoup4":
-    - path: source_url
-      value: "https://git.launchpad.net/beautifulsoup"
-      reason: "PyPI metadata points to non-git URL (crummy.com), actual source is on Launchpad"
